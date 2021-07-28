@@ -32,8 +32,10 @@ public class UDPClientChat {
 			Scanner scanner = new Scanner(System.in);
 			String nickname = "", mensagem = "", resposta = "";
 
-			System.out.print("Digite seu nickname: ");
-			nickname = scanner.nextLine();
+			do {
+				System.out.print("Digite seu nickname: ");
+				nickname = scanner.nextLine();
+			} while (nickname.equals(""));
 
 			System.out.println("Bem vindo " + nickname + ", vamos iniciar o chat. ");
 			System.out.println("Observação: para finalizar o chat digite -1");
@@ -43,7 +45,7 @@ public class UDPClientChat {
 				mensagem = scanner.nextLine();
 
 				if (!mensagem.equals("-1")) {
-					outPacket = new DatagramPacket(mensagem.getBytes("UTF-8"), mensagem.length(), host, PORTA);
+					outPacket = new DatagramPacket(mensagem.getBytes(), mensagem.length(), host, PORTA);
 					datagramSocket.send(outPacket);
 
 					System.out.println("Aguardando mensagem...");
@@ -52,7 +54,7 @@ public class UDPClientChat {
 					inPacket = new DatagramPacket(buffer, buffer.length);
 					datagramSocket.receive(inPacket);
 
-					resposta = new String(inPacket.getData(), 0, inPacket.getLength(), "UTF-8");
+					resposta = new String(inPacket.getData(), 0, inPacket.getLength());
 					System.out.println("Mensagem recebida: " + resposta);
 				}
 			} while (!mensagem.equals("-1"));
@@ -62,7 +64,7 @@ public class UDPClientChat {
 		} finally {
 			System.out.println("Finalizando chat...");
 
-			outPacket = new DatagramPacket("-1".getBytes("UTF-8"), "-1".length(), host, PORTA);
+			outPacket = new DatagramPacket("-1".getBytes(), "-1".length(), host, PORTA);
 			datagramSocket.send(outPacket);
 
 			datagramSocket.close();
